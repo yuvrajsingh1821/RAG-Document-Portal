@@ -5,5 +5,3 @@ def load_config(config_path: str = "config/config.yaml") -> dict:
         config = yaml.safe_load(file)
     return config
 
-
-load_config()
