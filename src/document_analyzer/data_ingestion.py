@@ -1,4 +1,5 @@
 import os
+from shutil import ExecError
 import fitz
 import uuid
 from datetime import datetime
@@ -66,8 +67,30 @@ class DocumentHandler:
 
 
 if __name__ == "__main__":
+    from pathlib import Path
+    from io import BytesIO
     handler = DocumentHandler()
-    print(handler.session_id)
-    print(handler.session_path)
+    pdf_path = "/Users/yuvrajsingh/Developer/Document-Portal/data/document_analysis/NIPS-2017-attention-is-all-you-need-Paper.pdf"
 
+    class DummyFile:
+        def __init__(self, file_path):
+            self.name = Path(file_path).name
+            self._file_path = file_path
+        def getbuffer(self):
+            return open(self._file_path, "rb").read()
+        
+    
+    dummy_pdf = DummyFile(pdf_path)
+    handler = DocumentHandler(session_id="test_session")
+    
+    try:
+        saved_path = handler.save_pdf(dummy_pdf)
+        print(saved_path)
+        print("\n\n")
+        text = handler.read_pdf(saved_path)
+        print("PDF CONTENT: \n\n")
+        print(text[:500])
+    except Exception as e:
+        print(f"Error saving PDF: {e}")
 
+    

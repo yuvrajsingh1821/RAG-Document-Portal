@@ -26,7 +26,7 @@ class ModelLoader:
         Validate necessary environment variables.
         Ensure API keys exist
         """
-        required_vars = ["GROQ_API_KEY", "GEMINI_API_KEY"]
+        required_vars = ["GROQ_API_KEY", "GOOGLE_API_KEY"]
         self.api_keys = {key:os.getenv(key) for key in required_vars}
         missing = [k for k, v in self.api_keys.items() if not v]
         if missing:
@@ -51,7 +51,7 @@ class ModelLoader:
         Load and return the configured LLM model.
         """
         llm_block = self.config["llm"]
-        provider_key = os.getenv("LLM_PROVIDER", "google")
+        provider_key = os.getenv("LLM_PROVIDER", "groq")
 
         if provider_key not in llm_block:
             log.error("LLM provider not found in config", provider=provider_key)
@@ -68,7 +68,7 @@ class ModelLoader:
         if provider == "google":
             return ChatGoogleGenerativeAI(
                 model=model_name,
-                google_api_key=self.api_key_mgr.get("GOOGLE_API_KEY"),
+                google_api_key=self.api_keys.get("GOOGLE_API_KEY"),
                 temperature=temperature,
                 max_output_tokens=max_tokens
             )
@@ -76,7 +76,7 @@ class ModelLoader:
         elif provider == "groq":
             return ChatGroq(
                 model=model_name,
-                api_key=self.api_key_mgr.get("GROQ_API_KEY"), #type: ignore
+                api_key=self.api_keys.get("GROQ_API_KEY"), #type: ignore
                 temperature=temperature,
             )
 
@@ -96,7 +96,6 @@ if __name__ == "__main__":
 
     # Test LLM
     llm = loader.load_llm()
-    print(f"LLM Loaded: {llm}")
     result = llm.invoke("Hello, how are you?")
     print(f"LLM Result: {result.content}")
 

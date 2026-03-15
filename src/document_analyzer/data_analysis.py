@@ -4,8 +4,9 @@ from utils.model_loader import ModelLoader
 from exception.custom_exception import DocumentPortalException
 from logger.custom_logger import CustomLogger
 from models.models import *
-from langchain_core.output_parsers import JsonOutputParser, OutputFixingParser
-from prompt.prompt_library import *
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_classic.output_parsers.fix import OutputFixingParser
+from prompt.prompt_library import PROMPT_REGISTRY
 
 class DocumentAnalyzer:
     """
@@ -23,7 +24,7 @@ class DocumentAnalyzer:
             self.parser = JsonOutputParser(pydantic_object=Metadata)
             self.fixing_parser = OutputFixingParser.from_llm(parser=self.parser, llm=self.llm)
 
-            self.prompt = prompt
+            self.prompt = PROMPT_REGISTRY["document_analysis"]
 
             self.log.info("DocumentAnalyzer initialized successfully")
         except Exception as e:
@@ -43,7 +44,7 @@ class DocumentAnalyzer:
             self.log.info("Metadata analysis chain initialized")
 
             response = chain.invoke({
-                "format_instruction": self.parser.get_format_instructions(),
+                "format_instructions": self.parser.get_format_instructions(),
                 "document_text": document_text
             })
 
