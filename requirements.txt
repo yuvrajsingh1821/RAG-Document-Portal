@@ -4,9 +4,12 @@ ipykernel
 langchain_groq
 langchain_google_genai
 langchain_community
+langchain-core[tracing]
 pypdf
 faiss-cpu 
 structlog
 PyMuPDF
 pandas
+streamlit
+
 -e .
