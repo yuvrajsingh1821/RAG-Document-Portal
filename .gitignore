@@ -40,3 +40,4 @@ build/
 document_portal.egg-info/
 data/
 faiss_index/
+archive/

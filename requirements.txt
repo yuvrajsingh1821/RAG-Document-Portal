@@ -11,5 +11,9 @@ structlog
 PyMuPDF
 pandas
 streamlit
-
+pytest
+fastapi
+uvicorn
+docx2txt
+python-multipart
 -e .
